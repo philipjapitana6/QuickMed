@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickMed - Hospital Room Locator, Doctors & Emergency SOS</title>
+  <meta name="description" content="Download the official QuickMed Android app. Check real-time hospital room availability in Iloilo, book specialized doctors, chat confidentially, and send GPS SOS alerts.">
+  <style>
+    :root {
+      --primary: #0d7369;
+      --primary-dark: #084c45;
+      --primary-light: #e0f2f1;
+      --emergency: #d62828;
+      --emergency-hover: #b21e1e;
+      --bg: #f6fafa;
+      --card-bg: #ffffff;
+      --card-tint: #f4eff7;
+      --text: #122624;
+      --subtext: #4d6461;
+      --border: #d5e5e3;
+      --vacant: #1b7a3d;
+    }
+
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    /* Sticky Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.3px;
+    }
+    .logo-cross {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: var(--emergency);
+      color: #fff;
+      border-radius: 7px;
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--subtext);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-btn {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem !important;
+    }
+    .nav-btn:hover { background: var(--primary-dark); }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 56px 20px 48px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: 2.9rem;
+      line-height: 1.15;
+      margin: 0 0 18px;
+      letter-spacing: -1px;
+      color: var(--text);
+    }
+    .hero h1 span { color: var(--primary); }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--subtext);
+      margin: 0 0 28px;
+    }
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--primary);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.02rem;
+      font-weight: 700;
+      padding: 15px 28px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(13, 115, 105, 0.24);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--primary);
+      border: 1.5px solid var(--border);
+      box-shadow: none;
+    }
+    .btn-secondary:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+    .meta {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: var(--subtext);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* Interactive App Phone Mockup */
+    .phone-frame {
+      width: 300px;
+      margin: 0 auto;
+      background: #122624;
+      border-radius: 38px;
+      padding: 12px;
+      box-shadow: 0 24px 48px rgba(13, 115, 105, 0.2);
+    }
+    .phone-screen {
+      background: #ffffff;
+      border-radius: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+    }
+    .app-topbar {
+      background: var(--primary);
+      color: #fff;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .app-topbar strong { font-size: 1.15rem; letter-spacing: -0.3px; }
+    .app-tabs {
+      display: flex;
+      border-bottom: 1px solid #e5eceb;
+      background: #fff;
+    }
+    .app-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--subtext);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .app-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .app-body {
+      padding: 14px;
+      flex: 1;
+      overflow-y: auto;
+      background: #fcfdfd;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .mock-welcome h4 { margin: 0 0 2px; font-size: 1.05rem; color: var(--text); }
+    .mock-welcome small { color: var(--subtext); display: block; margin-bottom: 12px; font-size: 0.78rem; }
+    .mock-tile {
+      background: var(--card-tint);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .mock-tile:hover { transform: translateY(-1px); }
+    .mock-tile h5 { margin: 0 0 4px; color: var(--primary); font-size: 0.9rem; }
+    .mock-tile p { margin: 0; font-size: 0.75rem; color: var(--subtext); line-height: 1.4; }
+    .hosp-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .vacant-txt { color: var(--vacant); }
+    .occ-txt { color: var(--emergency); }
+    .doc-row {
+      background: #fff;
+      border: 1px solid #e6efef;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-row strong { display: block; font-size: 0.84rem; }
+    .doc-row span { font-size: 0.72rem; color: var(--subtext); }
+    .doc-lic { font-size: 0.7rem; font-weight: 700; color: var(--primary); }
+    .sos-bar {
+      padding: 10px 14px;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+    .sos-pill {
+      background: var(--emergency);
+      color: #fff;
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 9px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(214, 40, 40, 0.3);
+    }
+
+    /* Sections */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .section-title h2 {
+      font-size: 2rem;
+      margin: 0 0 8px;
+      color: var(--primary);
+    }
+    .section-title p {
+      margin: 0;
+      color: var(--subtext);
+    }
+
+    /* Features Grid */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(13, 115, 105, 0.08);
+    }
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+    }
+    .icon-box.sos {
+      background: #fde8e8;
+      color: var(--emergency);
+    }
+    .feature-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    .feature-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--subtext);
+    }
+
+    /* Emergency Banner */
+    .emergency-strip {
+      background: linear-gradient(135deg, #b21e1e, #d62828);
+      color: #fff;
+      border-radius: 18px;
+      padding: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      box-shadow: 0 12px 28px rgba(214, 40, 40, 0.2);
+    }
+    .emergency-strip h3 { margin: 0 0 6px; font-size: 1.45rem; }
+    .emergency-strip p { margin: 0; opacity: 0.92; max-width: 620px; font-size: 0.96rem; }
+    .btn-white {
+      background: #fff;
+      color: var(--emergency);
+      font-weight: 800;
+      padding: 13px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-white:hover { background: #fff5f5; }
+
+    /* Install & Contact Grid */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .box {
+      padding: 28px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .box h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+      color: var(--primary);
+    }
+    .box ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--subtext);
+    }
+    .box li { margin-bottom: 12px; }
+    .box b { color: var(--text); }
+
+    .contact-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      font-size: 0.94rem;
+      color: var(--subtext);
+    }
+    .contact-item strong { color: var(--text); display: block; }
+
+    details {
+      border-top: 1px solid var(--border);
+      padding: 12px 0;
+    }
+    summary {
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.94rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+";
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+    details[open] summary::after { content: "−"; }
+    details p {
+      margin: 8px 0 0;
+      font-size: 0.88rem;
+      color: var(--subtext);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 0.88rem;
+      color: var(--subtext);
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+      background: #fff;
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 820px) {
+      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 36px; }
+      .hero h1 { font-size: 2.25rem; }
+      .cta-group, .meta { justify-content: center; }
+      .guide-grid { grid-template-columns: 1fr; }
+      .nav-links a:not(.nav-btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <span class="logo-cross">+</span> QuickMed
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Specialties</a>
+        <a href="#install">Install Guide</a>
+        <a href="#contact">Contact & Support</a>
+        <a href="https://github.com/philipjapitana6/QuickMed/releases/latest" class="nav-btn">Download App</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div>
+      <span class="badge">Healthcare & Emergency Response • Android App</span>
+      <h1>Faster Access to <span>Doctors, Hospitals</span> & Emergency Care.</h1>
+      <p>Check real-time hospital room availability, book online appointments with verified specialists, chat confidentially, and trigger GPS-tracked SOS distress alerts in seconds.</p>
+      
+      <div class="cta-group">
+        <a href="https://github.com/philipjapitana6/QuickMed/releases/latest" class="btn">
+          <span>📥</span> Download QuickMed APK
+        </a>
+        <a href="#install" class="btn btn-secondary">How to Install</a>
+      </div>
+
+      <div class="meta">
+        <span>✅ Version 1.0.0</span>
+        <span>📱 Android 7.0+</span>
+        <span>📍 Iloilo Healthcare Network</span>
+      </div>
+    </div>
+
+    <!-- Interactive App UI Preview matching QuickMed screenshots -->
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="app-topbar">
+          <strong>QuickMed</strong>
+          <span>✉️</span>
+        </div>
+        <div class="app-tabs">
+          <button class="app-tab active" onclick="switchTab('home', this)">Home</button>
+          <button class="app-tab" onclick="switchTab('doctors', this)">Doctors</button>
+          <button class="app-tab" onclick="switchTab('hospitals', this)">Hospitals</button>
+        </div>
+        <div class="app-body">
+          <!-- Home Tab -->
+          <div id="tab-home" class="tab-pane active">
+            <div class="mock-welcome">
+              <h4>Welcome to QuickMed</h4>
+              <small>Select a category to get started</small>
+            </div>
+            <div class="mock-tile" onclick="switchTab('doctors', document.querySelectorAll('.app-tab')[1])">
+              <h5>🏥 Medical Directory</h5>
+              <p>Browse specialized doctors and securely lookup patient records.</p>
+            </div>
+            <div class="mock-tile" onclick="switchTab('hospitals', document.querySelectorAll('.app-tab')[2])">
+              <h5>🛏️ Hospital & Room Locator</h5>
+              <p>View hospital addresses, contact numbers, and live room vacancy/occupancy statuses.</p>
+            </div>
+          </div>
+
+          <!-- Doctors Tab -->
+          <div id="tab-doctors" class="tab-pane">
+            <div class="doc-row">
+              <div>
+                <strong>Cardiology Specialist</strong>
+                <span>Verified Practitioner</span>
+              </div>
+              <span class="doc-lic">Licensed ✓</span>
+            </div>
+            <div class="doc-row">
+              <div>
+                <strong>Neurology Specialist</strong>
+                <span>Verified Practitioner</span>
+              </div>
+              <span class="doc-lic">Licensed ✓</span>
+            </div>
+            <div class="doc-row">
+              <div>
+                <strong>Pediatrics Specialist</strong>
+                <span>Verified Practitioner</span>
+              </div>
+              <span class="doc-lic">Licensed ✓</span>
+            </div>
+            <div class="doc-row">
+              <div>
+                <strong>Pulmonology Specialist</strong>
+                <span>Verified Practitioner</span>
+              </div>
+              <span class="doc-lic">Licensed ✓</span>
+            </div>
+          </div>
+
+          <!-- Hospitals Tab -->
+          <div id="tab-hospitals" class="tab-pane">
+            <div class="mock-tile">
+              <h5>WVMC</h5>
+              <p>📍 Q. Abeto Street, Mandurriao, Iloilo City<br>📞 09276789409</p>
+              <div class="hosp-stats">
+                <span class="vacant-txt">Vacant Rooms: 60</span>
+                <span class="occ-txt">Occupied: 0</span>
+              </div>
+            </div>
+            <div class="mock-tile">
+              <h5>QualiMed Hospital</h5>
+              <p>📍 Megaworld, Mandurriao, Iloilo City<br>📞 09276789409</p>
+              <div class="hosp-stats">
+                <span class="vacant-txt">Vacant Rooms: 50</span>
+                <span class="occ-txt">Occupied: 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sos-bar">
+          <div class="sos-pill">⚠️ SOS EMERGENCY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialties / Features Section -->
+  <section id="features" class="section">
+    <div class="section-title">
+      <h2>Core Healthcare Specialties</h2>
+      <p>Designed to streamline medical access for patients, doctors, and hospitals.</p>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="icon-box">🩺</div>
+        <h3>Online Doctor Appointments</h3>
+        <p>Filter practitioners by specialty, verify medical license credentials, and book consultations without long waiting lines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-box">🏥</div>
+        <h3>Online Hospital Admittance</h3>
+        <p>Check live vacant and occupied hospital room counts, addresses, and direct contact numbers before traveling.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-box">💬</div>
+        <h3>Confidential Patient-Doctor Chat</h3>
+        <p>Communicate securely and privately with healthcare professionals for follow-ups, guidance, and record inquiries.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-box sos">🚨</div>
+        <h3>SOS Distress with GPS Navigation</h3>
+        <p>One-tap emergency SOS alert transmitting real-time GPS tracking navigation when urgent medical assistance is needed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOS Highlight Banner -->
+  <section class="section" style="padding-top: 0;">
+    <div class="emergency-strip">
+      <div>
+        <h3>Built-In SOS Emergency Response</h3>
+        <p>Every screen in QuickMed features an instant-access SOS Emergency bar equipped with GPS tracking navigation to help responders locate patients rapidly during critical situations.</p>
+      </div>
+      <a href="https://github.com/philipjapitana6/QuickMed/releases/latest" class="btn-white">Get QuickMed Now</a>
+    </div>
+  </section>
+
+  <!-- Installation & Developer Info -->
+  <section id="install" class="section">
+    <div class="guide-grid">
+      <div class="box">
+        <h2>How to Install QuickMed on Android</h2>
+        <ol>
+          <li>Tap the <b>Download QuickMed APK</b> button at the top of this page.</li>
+          <li>Open your phone's <b>Downloads</b> folder or tap the completed download notification.</li>
+          <li>If Android prompts for permission, tap <b>Settings</b> and enable <b>Allow from this source</b>.</li>
+          <li>Tap <b>Install</b> and launch <b>QuickMed</b> from your home screen.</li>
+        </ol>
+
+        <details>
+          <summary>Why does Android show a security prompt?</summary>
+          <p>Because QuickMed is installed directly from our official release page rather than the Google Play Store, Android asks for confirmation before installing the APK.</p>
+        </details>
+        <details>
+          <summary>How do I update QuickMed later?</summary>
+          <p>Revisit this official website anytime to download the newest release APK and install it directly over your existing version.</p>
+        </details>
+      </div>
+
+      <div class="box" id="contact">
+        <h2>Developer & Project Info</h2>
+        <div class="contact-item">
+          <span>👨‍💻</span>
+          <div>
+            <strong>Philip Vincent Gardose Japitana</strong>
+            Founder & Lead Developer
+          </div>
+        </div>
+        <div class="contact-item">
+          <span>📍</span>
+          <div>
+            <strong>Office Address</strong>
+            Benigno Aquino Avenue, Lot 9 Blk 12, Quartero, Jaro, Iloilo City
+          </div>
+        </div>
+        <div class="contact-item">
+          <span>📞</span>
+          <div>
+            <strong>Direct Contact</strong>
+            09566475559
+          </div>
+        </div>
+        <div class="contact-item">
+          <span>🔗</span>
+          <div>
+            <strong>Official Repository</strong>
+            <a href="https://github.com/philipjapitana6/QuickMed" style="color: var(--primary); font-weight: 600; text-decoration: none;">github.com/philipjapitana6/QuickMed</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 QuickMed. Developed by Philip Vincent Gardose Japitana. All rights reserved.</p>
+    <p>
+      <a href="https://github.com/philipjapitana6/QuickMed">GitHub Repository</a> • 
+      <a href="https://github.com/philipjapitana6/QuickMed/releases">Latest Releases</a>
+    </p>
+  </footer>
+
+  <script>
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.app-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tabName).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
